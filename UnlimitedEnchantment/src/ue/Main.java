@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
@@ -46,6 +47,10 @@ public class Main extends JavaPlugin
         return true;
       }
       Player player=(Player)sender;
+      if (player.getInventory().getItemInMainHand()==null||player.getInventory().getItemInMainHand().getType()==Material.AIR) {
+        sender.sendMessage("主手上无物品!");
+        return true;
+      }
       Enchantment ench=null;
       boolean skip=false;
       for(String i : args)
@@ -93,6 +98,10 @@ public class Main extends JavaPlugin
         return true;
       }
       Player player=(Player)sender;
+      if (player.getInventory().getItemInMainHand()==null||player.getInventory().getItemInMainHand().getType()==Material.AIR) {
+        sender.sendMessage("主手上无物品!");
+        return true;
+      }
       if (args.length<1) {
         try {
           player.getInventory().getItemInMainHand().getEnchantments().entrySet().forEach(i2->player.getInventory().getItemInMainHand().removeEnchantment(i2.getKey()));
@@ -102,9 +111,13 @@ public class Main extends JavaPlugin
       }else {
         for(String i : args)
         {
-          List<Enchantment> tmp=Lists.newArrayList(Enchantment.values()).parallelStream().filter(i2->i.contains(":")?(i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH)):i2.getKey().getKey().toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))).collect(Collectors.toList());
+          List<Enchantment> tmp=player.getInventory().getItemInMainHand().getEnchantments().keySet().parallelStream().filter(i2->i.contains(":")?(i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH)):i2.getKey().getKey().toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))).collect(Collectors.toList());
           if (tmp.size()==1) {
-            player.getInventory().getItemInMainHand().removeEnchantment(tmp.get(0));
+            try {
+              player.getInventory().getItemInMainHand().removeEnchantment(tmp.get(0));
+            }catch (Throwable e) {
+              sender.sendMessage("移除附魔"+(tmp.get(0).getKey().getNamespace()+":"+tmp.get(0).getKey().getKey())+"时出现异常: "+e.toString());
+            }
           }else if (tmp.size()>1) {
             sender.sendMessage("对于条件"+i+"有多个符合条件的附魔: "+Arrays.toString(tmp.parallelStream().map(i2->i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toArray(String[]::new)));
           }else {
@@ -134,8 +147,15 @@ public class Main extends JavaPlugin
         return r;
       }
     }else if ("re".equalsIgnoreCase(command.getName())) {
+      if (!(sender instanceof Player)) {
+        return Lists.newArrayList();
+      }
+      Player player=(Player)sender;
+      if (player.getInventory().getItemInMainHand()==null||player.getInventory().getItemInMainHand().getType()==Material.AIR) {
+        return Lists.newArrayList();
+      }
       String i=args.length<1?"":args[args.length-1];
-      return Lists.newArrayList(Enchantment.values()).parallelStream().filter(i2->i.contains(":")?(i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH)):i2.getKey().getKey().toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))).map(i2->i2.getKey().getNamespace()+":"+i2.getKey().getKey()).collect(Collectors.toList());
+      return player.getInventory().getItemInMainHand().getEnchantments().keySet().parallelStream().filter(i2->i.contains(":")?(i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH)):i2.getKey().getKey().toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))).map(i2->i2.getKey().getNamespace()+":"+i2.getKey().getKey()).collect(Collectors.toList());
     }
     return super.onTabComplete(sender, command, alias, args);
   }
