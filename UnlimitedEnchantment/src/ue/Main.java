@@ -105,6 +105,14 @@ public class Main extends JavaPlugin
           skip=true;
         }
       }
+      if (ench!=null) {
+        try {
+          player.getInventory().getItemInMainHand().addUnsafeEnchantment(ench, 1);
+        }catch (Throwable e) {
+          sender.sendMessage("添加附魔"+(ench.getKey().getNamespace()+":"+ench.getKey().getKey())+"时出现异常: "+e.toString());
+        }
+        ench=null;
+      }
       return true;
     }else if ("re".equalsIgnoreCase(command.getName())) {
       if (!(sender instanceof Player)) {
