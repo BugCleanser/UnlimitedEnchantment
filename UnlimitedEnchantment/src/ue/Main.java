@@ -141,8 +141,13 @@ public class Main extends JavaPlugin
         String i=args[args.length-1];
         String last=args[args.length-2];
         List<String> r=new ArrayList<>();
-        if(!isInt(last))
+        if(!isInt(last)&&(isInt(i)||i.trim().isEmpty()))
+        {
+          if (!i.trim().isEmpty()) {
+            r.add(i);
+          }
           r.add("[int]");
+        }
         r.addAll(Lists.newArrayList(Enchantment.values()).parallelStream().filter(i2->i.contains(":")?(i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH)):i2.getKey().getKey().toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))).map(i2->i2.getKey().getNamespace()+":"+i2.getKey().getKey()).collect(Collectors.toList()));
         return r;
       }
