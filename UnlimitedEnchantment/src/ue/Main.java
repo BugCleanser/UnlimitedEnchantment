@@ -148,7 +148,7 @@ public class Main extends JavaPlugin
           }
           r.add("[int]");
         }
-        r.addAll(Lists.newArrayList(Enchantment.values()).parallelStream().filter(i2->i.contains(":")?(i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH)):i2.getKey().getKey().toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))).map(i2->i2.getKey().getNamespace()+":"+i2.getKey().getKey()).collect(Collectors.toList()));
+        r.addAll(Lists.newArrayList(Enchantment.values()).parallelStream().filter(i2->(i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))||(i2.getKey().getKey().toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))&&!i.contains(":"))).map(i2->i2.getKey().getNamespace()+":"+i2.getKey().getKey()).collect(Collectors.toList()));
         return r;
       }
     }else if ("re".equalsIgnoreCase(command.getName())) {
@@ -160,7 +160,7 @@ public class Main extends JavaPlugin
         return Lists.newArrayList();
       }
       String i=args.length<1?"":args[args.length-1];
-      return player.getInventory().getItemInMainHand().getEnchantments().keySet().parallelStream().filter(i2->i.contains(":")?(i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH)):i2.getKey().getKey().toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))).map(i2->i2.getKey().getNamespace()+":"+i2.getKey().getKey()).collect(Collectors.toList());
+      return player.getInventory().getItemInMainHand().getEnchantments().keySet().parallelStream().filter(i2->(i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))||(i2.getKey().getKey().toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))&&!i.contains(":"))).map(i2->i2.getKey().getNamespace()+":"+i2.getKey().getKey()).collect(Collectors.toList());
     }
     return super.onTabComplete(sender, command, alias, args);
   }
