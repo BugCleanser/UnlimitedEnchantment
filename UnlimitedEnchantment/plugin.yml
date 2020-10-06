@@ -1,0 +1,8 @@
+name: UnlimitedEnchantment
+version: 0.1
+api-version: 1.13
+main: ue.Main
+author: lvxinlei
+permissions: 
+  ue.use: 
+    default: op
