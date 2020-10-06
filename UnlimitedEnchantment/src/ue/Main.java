@@ -130,6 +130,7 @@ public class Main extends JavaPlugin
         }catch (Throwable e) {
           sender.sendMessage("移除全部附魔时出现异常: "+e.toString());
         }
+        return true;
       }else {
         for(String i : args)
         {
@@ -159,6 +160,7 @@ public class Main extends JavaPlugin
             sender.sendMessage("对于条件"+i+"没有匹配的附魔");
           }
         }
+        return true;
       }
     }
     return super.onCommand(sender, command, label, args);
