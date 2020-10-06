@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.bukkit.Material;
@@ -81,6 +82,19 @@ public class Main extends JavaPlugin
           ench=null;
         }
         List<Enchantment> tmp=Lists.newArrayList(Enchantment.values()).parallelStream().filter(i2->i.contains(":")?(i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH)):i2.getKey().getKey().toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))).collect(Collectors.toList());
+        List<Enchantment> tmp2=tmp;
+        if(tmp.size()>1)
+        {
+          Enchantment o=tmp.parallelStream().filter(i2->Objects.equals((i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH),i.toLowerCase(Locale.ENGLISH))).findFirst().orElseGet(()->{
+            if(tmp2.parallelStream().map(i2->i2.getKey().getNamespace()).collect(Collectors.toSet()).size()==1) {
+              return tmp2.parallelStream().filter(i2->Objects.equals(i2.getKey().getKey().toLowerCase(Locale.ENGLISH),i.toLowerCase())).findFirst().orElse(null);
+            }
+            return null;
+          });
+          if (o!=null) {
+            tmp=Lists.newArrayList(o);
+          }
+        }
         if (tmp.size()==1) {
           ench=tmp.get(0);
         }else if (tmp.size()>1) {
@@ -112,6 +126,19 @@ public class Main extends JavaPlugin
         for(String i : args)
         {
           List<Enchantment> tmp=player.getInventory().getItemInMainHand().getEnchantments().keySet().parallelStream().filter(i2->i.contains(":")?(i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH)):i2.getKey().getKey().toLowerCase(Locale.ENGLISH).startsWith(i.toLowerCase(Locale.ENGLISH))).collect(Collectors.toList());
+          List<Enchantment> tmp2=tmp;
+          if(tmp.size()>1)
+          {
+            Enchantment o=tmp.parallelStream().filter(i2->Objects.equals((i2.getKey().getNamespace()+":"+i2.getKey().getKey()).toLowerCase(Locale.ENGLISH),i.toLowerCase(Locale.ENGLISH))).findFirst().orElseGet(()->{
+              if(tmp2.parallelStream().map(i2->i2.getKey().getNamespace()).collect(Collectors.toSet()).size()==1) {
+                return tmp2.parallelStream().filter(i2->Objects.equals(i2.getKey().getKey().toLowerCase(Locale.ENGLISH),i.toLowerCase())).findFirst().orElse(null);
+              }
+              return null;
+            });
+            if (o!=null) {
+              tmp=Lists.newArrayList(o);
+            }
+          }
           if (tmp.size()==1) {
             try {
               player.getInventory().getItemInMainHand().removeEnchantment(tmp.get(0));
